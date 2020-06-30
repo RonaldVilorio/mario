@@ -8,12 +8,17 @@ let upPressed = false;
 let downPressed = false;
 // organize
 let mario = {
+  width: 20,
+  height: 20,
   coordX: 10,
   coordY: 280,
+  gravity: -0.5,
 };
 let block = {
   coordX: 100,
   coordY: 250,
+  width: 100,
+  height: 50,
 };
 
 document.addEventListener("keydown", keyDownHandler);
@@ -21,14 +26,14 @@ document.addEventListener("keyup", keyUpHandler);
 
 function drawMario() {
   ctx.beginPath();
-  ctx.rect(mario.coordX, mario.coordY, 20, 20);
+  ctx.rect(mario.coordX, mario.coordY, mario.width, mario.height);
   ctx.fillStyle = `#0095DD`;
   ctx.fill();
   ctx.closePath();
 }
 function drawBlock() {
   ctx.beginPath();
-  ctx.rect(block.coordX, block.coordY, 50, 50);
+  ctx.rect(block.coordX, block.coordY, block.width, block.height);
   ctx.fillStyle = "green";
   ctx.fill();
   ctx.closePath();
@@ -41,7 +46,6 @@ function drawFloor() {
   ctx.closePath();
 }
 function keyDownHandler(e) {
-  console.log(e.key);
   if (e.key === "Right" || e.key === "ArrowRight") {
     rightPressed = true;
   } else if (e.key === "Left" || e.key === "ArrowLeft") {
@@ -56,12 +60,13 @@ function keyDownHandler(e) {
   move();
 }
 function keyUpHandler(e) {
-  if (e.key == "Right" || e.key == "ArrowRight") {
+  if (e.key == "ArrowRight" && e.key == "ArrowUp") {
+    console.log("hey");
+  } else if (e.key == "Right" || e.key == "ArrowRight") {
     rightPressed = false;
   } else if (e.key == "Left" || e.key == "ArrowLeft") {
     leftPressed = false;
   } else if (e.key == "Up" || e.key == "ArrowUp") {
-    mario.coordY += 50;
     upPressed = false;
   } else if (e.key == "Down" || e.key == "ArrowDown") {
     downPressed = false;
@@ -70,26 +75,41 @@ function keyUpHandler(e) {
   }
 }
 function move() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height - 100);
-
-  if (rightPressed) {
+  if (block.coordX - mario.coordX == 20 && rightPressed) {
+    mario.coordX = mario.coordX - 10;
+  }
+  if (rightPressed && upPressed) {
+    mario.coordY -= 55;
+    mario.coordX += 20;
+  } else if (rightPressed) {
     mario.coordX += 10;
-    console.log(mario.coordX, block.coordX);
   } else if (leftPressed) {
     mario.coordX -= 10;
   } else if (upPressed) {
-    mario.coordY -= 50;
+    mario.coordY -= 55;
   } else if (downPressed) {
     null;
   } else {
     null;
   }
+
   drawMario();
 }
-if (mario.coordX + 20 === block.coordX) {
-  null;
+function drawAll() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height - 100);
+  drawMario();
+  drawFloor();
+  drawBlock();
+  if (
+    mario.coordY == block.coordY - mario.height &&
+    mario.coordX + mario.width >= block.coordX &&
+    mario.coordX <= block.width + block.coordX
+  ) {
+    null;
+  } else if (mario.coordY < 300 - mario.height) {
+    mario.coordY -= mario.gravity;
+  }
+ 
 }
+setInterval(drawAll, 1);
 
-setInterval(drawBlock, 1);
-drawMario();
-drawFloor();
