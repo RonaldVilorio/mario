@@ -6,7 +6,17 @@ let rightPressed = false;
 let leftPressed = false;
 let upPressed = false;
 let downPressed = false;
+
+// questions?
+// do I want a floor obj(block)
+// --> a total of 8 blocks that make up the floor?
+// The flying block the same way?
+// test the flying block obj
+// test the spikes obj
+// test the minions obj
 // organize
+let arrOfObjs = [];
+
 let mario = {
   width: 20,
   height: 20,
@@ -14,11 +24,43 @@ let mario = {
   coordY: 280,
   gravity: -0.5,
 };
-let block = {
-  coordX: 100,
+mario.img = new Image();
+mario.img.src = "./assets/mario.png";
+
+let spikes = {
+  coordX: 200,
   coordY: 250,
   width: 100,
   height: 50,
+  danger: true,
+};
+let floorBlock = {
+  coordX: 0,
+  coordY: 300,
+  width: 100,
+  height: canvas.height,
+  id:0
+};
+let block = {
+  coordX: 100,
+  coordY: 240,
+  width: 100,
+  height: 60,
+  danger: false,
+};
+let breakableBlock = {
+  coordX: 300,
+  coordY: 240,
+  width: 100,
+  height: 30,
+  danger: false,
+};
+let minion = {
+  width: 20,
+  height: 20,
+  coordX: 10,
+  coordY: 280,
+  gravity: -0.5,
 };
 
 document.addEventListener("keydown", keyDownHandler);
@@ -26,8 +68,31 @@ document.addEventListener("keyup", keyUpHandler);
 
 function drawMario() {
   ctx.beginPath();
-  ctx.rect(mario.coordX, mario.coordY, mario.width, mario.height);
-  ctx.fillStyle = `#0095DD`;
+  ctx.closePath();
+  ctx.drawImage(
+    mario.img,
+    mario.coordX,
+    mario.coordY,
+    mario.width,
+    mario.height
+  );
+}
+function drawSpikes() {
+  ctx.beginPath();
+  ctx.rect(spikes.coordX, spikes.coordY, spikes.width, spikes.height);
+  ctx.fillStyle = `red`;
+  ctx.fill();
+  ctx.closePath();
+}
+function drawBreakableBlock() {
+  ctx.beginPath();
+  ctx.rect(
+    breakableBlock.coordX,
+    breakableBlock.coordY,
+    breakableBlock.width,
+    breakableBlock.height
+  );
+  ctx.fillStyle = "darkblue";
   ctx.fill();
   ctx.closePath();
 }
@@ -38,14 +103,22 @@ function drawBlock() {
   ctx.fill();
   ctx.closePath();
 }
-function drawFloor() {
+function drawFloorBlock() {
   ctx.beginPath();
-  ctx.rect(0, 300, canvas.width, canvas.height);
+  ctx.rect(
+    floorBlock.coordX,
+    floorBlock.coordY,
+    floorBlock.width,
+    floorBlock.height
+  );
   ctx.fillStyle = "brown";
   ctx.fill();
   ctx.closePath();
 }
 function keyDownHandler(e) {
+  //   if (block.coordX - mario.coordX == 20 || mario.coordX) {
+  //     mario.coordX = mario.coordX - 10;
+  //   }
   if (e.key === "Right" || e.key === "ArrowRight") {
     rightPressed = true;
   } else if (e.key === "Left" || e.key === "ArrowLeft") {
@@ -75,12 +148,12 @@ function keyUpHandler(e) {
   }
 }
 function move() {
-  if (block.coordX - mario.coordX == 20 && rightPressed) {
-    mario.coordX = mario.coordX - 10;
-  }
   if (rightPressed && upPressed) {
-    mario.coordY -= 55;
+    mario.coordY -= 50;
     mario.coordX += 20;
+  } else if (leftPressed && upPressed) {
+    mario.coordY -= 50;
+    mario.coordX -= 20;
   } else if (rightPressed) {
     mario.coordX += 10;
   } else if (leftPressed) {
@@ -98,8 +171,13 @@ function move() {
 function drawAll() {
   ctx.clearRect(0, 0, canvas.width, canvas.height - 100);
   drawMario();
-  drawFloor();
+
+  //   drawFloorBlock();
+  //   drawFloor();
   drawBlock();
+  drawBreakableBlock();
+  //   drawSpikes();
+
   if (
     mario.coordY == block.coordY - mario.height &&
     mario.coordX + mario.width >= block.coordX &&
@@ -109,7 +187,17 @@ function drawAll() {
   } else if (mario.coordY < 300 - mario.height) {
     mario.coordY -= mario.gravity;
   }
- 
 }
-setInterval(drawAll, 1);
 
+function displayFloorBs() {
+    let arrObjs = [];
+  for (let i = 0; i < 8; i++) {
+    drawFloorBlock();
+    floorBlock.coordX = floorBlock.coordX + 100;
+    floorBlock.id++
+    arrObjs.push(floorBlock)
+  }
+  console.log(arrObjs)
+}
+displayFloorBs();
+setInterval(drawAll, 1);
