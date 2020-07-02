@@ -141,13 +141,12 @@ function keyUpHandler(e) {
   }
 }
 function move() {
-  console.log(mario.coordX,block.coordX + block.width)
-
+  // handles the green block interaction
   if (block.coordX - mario.coordX == 20) {
     mario.coordX = mario.coordX - 10;
   }
-  if(block.coordX + block.width == mario.coordX && leftPressed){
-    mario.coordX = mario.coordX+10
+  if (block.coordX + block.width == mario.coordX && leftPressed) {
+    mario.coordX = mario.coordX + 10;
   }
 
   if (rightPressed && upPressed) {
@@ -167,23 +166,30 @@ function move() {
   } else {
     null;
   }
-
-  drawMario();
 }
 function drawAll() {
+  // clears everything above the floor
   ctx.clearRect(0, 0, canvas.width, canvas.height - 100);
-  drawFloorBlock;
+  // clears mario when falling
+  ctx.clearRect(500, 200, 100, canvas.height);
   drawMario();
   drawBlock();
   drawBreakableBlock();
+  console.log(mario.coordX, mario.coordY);
 
+  if (mario.coordY >= 400) {
+    mario.coordX = 20;
+    mario.coordY = 220;
+  }
   if (
     mario.coordY == block.coordY - mario.height &&
     mario.coordX + mario.width >= block.coordX &&
     mario.coordX <= block.width + block.coordX
   ) {
     null;
-  } else if (mario.coordY < 300 - mario.height) {
+  } else if (mario.coordY < floorBlock.coordY - mario.height) {
+    mario.coordY -= mario.gravity;
+  } else if (mario.coordX >= 500 && mario.coordX <= 580) {
     mario.coordY -= mario.gravity;
   }
 }
@@ -197,4 +203,4 @@ function displayFloorBs() {
   }
 }
 displayFloorBs();
-setInterval(drawAll, 10);
+// setInterval(drawAll, 10);
