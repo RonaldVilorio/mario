@@ -109,6 +109,33 @@ function drawAll() {
   } else if (mario.coordY < 300 - mario.height) {
     mario.coordY -= mario.gravity;
   }
+
+  // function drawBlock() {
+//   ctx.beginPath();
+//   ctx.rect(block.coordX, block.coordY, block.width, block.height);
+//   ctx.fillStyle = "green";
+//   ctx.fill();
+//   ctx.closePath();
+// }
+
+  // console.log(mario.coordX, mario.coordY);
+  // console.log(breakableBlock.coordY);
+
+  // if (mario.coordY >= 400) {
+  //   mario.coordX = 20;
+  //   mario.coordY = 220;
+  // }
+  // if (
+  //   mario.coordY == block.coordY - mario.height &&
+  //   mario.coordX + mario.width >= block.coordX &&
+  //   mario.coordX <= block.width + block.coordX
+  // ) {
+  //   null;
+  // } else if (mario.coordY < floorBlock.coordY - mario.height) {
+  //   mario.coordY -= mario.gravity;
+  // } else if (mario.coordX >= 500 && mario.coordX <= 580) {
+  //   mario.coordY -= mario.gravity;
+  // }
  
 }
 setInterval(drawAll, 1);
