@@ -41,6 +41,7 @@ let blocks = [
   createBlock(200, 270, 50, 50, "green", false, false),
   createBlock(300, 270, 50, 50, "green", false, false),
   createBlock(0, 300, 400, 20, "brown", false, true),
+  createBlock(300, 350, 400, 20, "brown", false, true),
 ];
 
 function createBlock(x, y, w, h, c, d, f) {
@@ -160,8 +161,15 @@ function dontFall() {
 
   for (let i = 0; i < blocks.length; i++) {
     if (blocks[i].floor) {
-      if (blocks[i].coordY === mario.coordY + mario.height) {
+      if (
+        blocks[i].coordY === mario.coordY + mario.height &&
+        mario.coordX < blocks[i].coordX + blocks[i].width
+      ) {
         mario.gravity = 0;
+        break;
+      } else {
+        console.log("alallala");
+        mario.gravity = -1.0;
       }
     } else if (blocks[i].color === "green") {
       if (
