@@ -19,33 +19,28 @@ let mario = {
 mario.img = new Image();
 mario.img.src = "./assets/mario.png";
 
-// extra obstacle for mario
-
-// let minion = {
-//   coordX: 10,
-//   coordY: 280,
-//   width: 20,
-//   height: 20,
-//   gravity: -9.5,
-// };
-
 document.addEventListener("keydown", keyDownHandler);
 document.addEventListener("keyup", keyUpHandler);
 
 let blocks = [
-  createBlock(100, 270, 50, 50, "green", false, false),
-  createBlock(200, 270, 50, 50, "green", false, false),
-  createBlock(300, 270, 50, 50, "green", false, false),
-  createBlock(0, 300, 400, 20, "brown", false, true),
-  createBlock(400, 350, 400, 20, "brown", false, true),
-  createBlock(400, 200, 80, 20, "brown", false, true),
-  createBlock(20, 200, 10, 10, "darkblue", false, false),
-  createBlock(50, 200, 10, 10, "darkblue", false, false),
+  createBlock(200, 270, 50, 50, "red", false),
+  createBlock(0, 300, 400, 20, "brown", false),
+  createBlock(400, 350, 400, 20, "brown", false),
+  createBlock(400, 200, 80, 20, "brown", false),
+  createBlock(700, 100, 80, 20, "brown", false),
+  createBlock(550, 150, 80, 20, "brown", false),
+  createBlock(800, 200, 80, 20, "brown", false),
+  createBlock(20, 200, 10, 10, "black", false),
+  createBlock(120, 100, 10, 10, "black", false),
+  createBlock(70, 350, 10, 10, "black", false),
+  createBlock(220, 230, 10, 10, "black", false),
+  createBlock(500, 120, 10, 10, "black", false),
+  createBlock(700, 200, 10, 10, "black", false),
 ];
 
-let numOfTargets = blocks.filter((el) => el.color === "darkblue").length;
-// once you have collected 20/20 you win, track the best times
+let numOfTargets = blocks.filter((el) => el.color === "black").length;
 
+// once you have collected 10/10 you win, track the best times
 function drawScore() {
   ctx.font = "16px Arial";
   ctx.fillStyle = "red";
@@ -64,9 +59,9 @@ function decrementTime() {
 function stopTimer() {
   time = 0;
 }
-// Timer
+// TimerEnd
 
-function createBlock(x, y, w, h, c, d, f) {
+function createBlock(x, y, w, h, c, d) {
   return {
     coordX: x,
     coordY: y,
@@ -74,7 +69,6 @@ function createBlock(x, y, w, h, c, d, f) {
     height: h,
     danger: d,
     color: c,
-    floor: f,
   };
 }
 function drawMario() {
@@ -123,8 +117,6 @@ function keyUpHandler(e) {
     leftPressed = false;
   } else if (e.key == "Up" || e.key == "ArrowUp") {
     upPressed = false;
-  } else if (e.key == "Down" || e.key == "ArrowDown") {
-    downPressed = false;
   } else {
     null;
   }
@@ -142,24 +134,13 @@ function move() {
     mario.coordX -= 10;
   } else if (upPressed) {
     mario.coordY -= 50;
-  } else if (downPressed) {
-    mario.coordY += 5;
   } else {
     null;
   }
 }
-
-// let blocks = [
-//   createBlock(320, 240, 20, 20, "darkblue", false, false),
-//   createBlock(340, 240, 20, 20, "darkblue", false, false),
-//   createBlock(100, 270, 50, 50, "green", false, false),
-//   createBlock(200, 270, 50, 50, "green", false, false),
-//   createBlock(0, 300, 400, 20, "brown", false, true),
-// ];
-
 function dontFall() {
   for (let i = 0; i < blocks.length; i++) {
-    if (blocks[i].floor) {
+    if (blocks[i].color === "brown") {
       if (
         blocks[i].coordY === mario.coordY + mario.height &&
         mario.coordX < blocks[i].coordX + blocks[i].width &&
@@ -170,31 +151,30 @@ function dontFall() {
       } else {
         mario.gravity = -1.0;
       }
-    } else if (blocks[i].color === "green") {
+    } else if (blocks[i].color === "red") {
       if (
         mario.coordX + mario.width <= blocks[i].coordX ||
         mario.coordX >= blocks[i].coordX + blocks[i].width
       ) {
-        console.log("dedede");
         mario.gravity = -1.0;
       } else if (mario.coordY + mario.height === blocks[i].coordY) {
-        console.log("hey");
         mario.gravity = 0;
         break;
       } else {
         mario.gravity = -1.0;
       }
-    } else if (blocks[i].color === "darkblue") {
+    } else if (blocks[i].color === "black") {
       if (
         mario.coordX === blocks[i].coordX &&
         mario.coordY === blocks[i].coordY
       ) {
         blocks[i].color = "yellow";
         score += 1;
+        // break;
       }
     }
 
-    // green block phasing stoppage
+    // block phasing stoppage
     if (blocks[i].coordX - mario.coordX == 10 && blocks[i].height > 20) {
       mario.coordX = mario.coordX - 10;
     }
@@ -204,22 +184,42 @@ function dontFall() {
     ) {
       mario.coordX = mario.coordX + 10;
     }
-
-    if (mario.coordY > canvas.height) {
+    // mario is restarted every time he falls out of canvas/goes above
+    // out of canvas left-right
+    if (
+      mario.coordY > canvas.height ||
+      mario.coordY + mario.height < 0 ||
+      mario.coordX + mario.width <= 0 ||
+      mario.coordX > canvas.width
+    ) {
       mario.coordX = 10;
       mario.coordY = 280;
     }
   }
+  return score;
 }
 function drawAll() {
   // clears everything
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawMario();
-  drawBlocks();
   mario.coordY -= mario.gravity;
-  dontFall();
+
+  // drawStartMenu();
   drawScore();
   drawTimer();
+  drawMario();
+  drawBlocks();
+  dontFall();
+
+  if (score === numOfTargets) {
+    clearInterval(gameOn);
+    alert("Nice job!");
+    location.reload();
+  } else if (score != numOfTargets && time === 0) {
+    clearInterval(gameOn);
+    alert("You lose");
+    location.reload();
+  }
 }
-setInterval(drawAll, 10);
+
+let gameOn = setInterval(drawAll, 10);
 setInterval(decrementTime, 1000);
