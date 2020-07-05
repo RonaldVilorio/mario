@@ -42,6 +42,7 @@ let blocks = [
   createBlock(300, 270, 50, 50, "green", false, false),
   createBlock(0, 300, 400, 20, "brown", false, true),
   createBlock(300, 350, 400, 20, "brown", false, true),
+  createBlock(300, 200, 400, 20, "brown", false, true),
 ];
 
 function createBlock(x, y, w, h, c, d, f) {
@@ -134,41 +135,18 @@ function move() {
 //   createBlock(200, 270, 50, 50, "green", false, false),
 //   createBlock(0, 300, 400, 20, "brown", false, true),
 // ];
-function handleBlockStand(blks) {
-  let greenBlocks = blks.filter((el) => el.color === "green");
-  let floor = blks.filter((el) => el.floor === true);
-  let gblock1 = greenBlocks[0];
-  let gblock2 = greenBlocks[1];
 
-  if (floor[0].coordY === mario.coordY + mario.height) {
-    mario.gravity = 0;
-  } else if (
-    mario.coordY + mario.height === gblock1.coordY &&
-    (mario.coordX + mario.width <= gblock1.coordX ||
-      mario.coordX >= gblock1.coordX + gblock1.width)
-  ) {
-    console.log("dedede");
-    mario.gravity = -1.0;
-  } else if (mario.coordY + mario.height === gblock1.coordY) {
-    console.log("hey");
-    mario.gravity = 0;
-  } else {
-    mario.gravity = -1.0;
-  }
-}
 function dontFall() {
-  // handleBlockStand(blocks);
-
   for (let i = 0; i < blocks.length; i++) {
     if (blocks[i].floor) {
       if (
         blocks[i].coordY === mario.coordY + mario.height &&
-        mario.coordX < blocks[i].coordX + blocks[i].width
+        mario.coordX < blocks[i].coordX + blocks[i].width &&
+        mario.coordX + mario.width > blocks[i].coordX
       ) {
         mario.gravity = 0;
         break;
       } else {
-        console.log("alallala");
         mario.gravity = -1.0;
       }
     } else if (blocks[i].color === "green") {
