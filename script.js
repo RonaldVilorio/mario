@@ -121,24 +121,26 @@ function keyUpHandler(e) {
     null;
   }
 }
+
 function move() {
   if (rightPressed && upPressed) {
-    mario.coordY -= 50;
+    mario.coordY -= 30;
     mario.coordX += 20;
   } else if (leftPressed && upPressed) {
-    mario.coordY -= 50;
+    mario.coordY -= 30;
     mario.coordX -= 20;
   } else if (rightPressed) {
     mario.coordX += 10;
   } else if (leftPressed) {
     mario.coordX -= 10;
   } else if (upPressed) {
-    mario.coordY -= 50;
+    mario.coordY -= 30;
   } else {
     null;
   }
 }
-function dontFall() {
+function blockHandler() {
+  console.log(mario.coordY, mario.coordY + mario.height);
   for (let i = 0; i < blocks.length; i++) {
     if (blocks[i].color === "brown") {
       if (
@@ -150,6 +152,17 @@ function dontFall() {
         break;
       } else {
         mario.gravity = -1.0;
+      }
+      if (
+        blocks[i].coordY + blocks[i].height >= mario.coordY &&
+        mario.coordY > blocks[i].coordY &&
+        mario.coordX < blocks[i].coordX + blocks[i].width &&
+        mario.coordX + mario.width > blocks[i].coordX
+      ) {
+        console.log("he");
+        mario.coordY = blocks[i].coordY + blocks[i].height;
+        mario.coordY = mario.coordY + 30
+        break;
       }
     } else if (blocks[i].color === "red") {
       if (
@@ -202,13 +215,12 @@ function drawAll() {
   // clears everything
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   mario.coordY -= mario.gravity;
-
-  // drawStartMenu();
+  
   drawScore();
   drawTimer();
   drawMario();
   drawBlocks();
-  dontFall();
+  blockHandler();
 
   if (score === numOfTargets) {
     clearInterval(gameOn);

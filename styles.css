@@ -1,8 +1,15 @@
 body {
   background-color: black;
+  color: white;
 }
-#myCanvas{
-    margin: auto;
-    display: flex;
-    background-color: lightgray;
+#myCanvas {
+  margin: auto;
+  display: flex;
+  background-color: lightgray;
+}
+#rules {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  font-size: 30px;
 }
