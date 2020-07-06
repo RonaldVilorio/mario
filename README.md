@@ -1,6 +1,4 @@
-# My Mario Adventures Game
-
-# [My game](http://www.ronviloriogames.xyz/)
+# [My Mario Adventures Game](http://www.ronviloriogames.xyz/)
 
 ## Functionality:
 
